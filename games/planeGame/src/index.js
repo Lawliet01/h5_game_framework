@@ -1,23 +1,15 @@
-import enableGesture from "./lib/gesture.js";
 import { EggElement, PlaneElement, MonsterElement } from "./customElement.js";
-import Renderer from "./common/renderer.js";
-import { runAnimation } from "./common/runtime.js";
-import Game from "./common/baseGame.js";
-import { bfs } from "./lib/utils";
-
-const canvas = document.getElementById("app");
-canvas.width = window.screen.width;
-canvas.height = window.screen.height;
-enableGesture(canvas);
-
-const renderer = new Renderer(canvas);
+import { runAnimation } from "core/runtime.js";
+import Game from "core/baseGame.js";
+import { bfs } from "common/utils";
 
 class PlaneGame extends Game {
-	constructor(canvas) {
-		super(canvas);
+	constructor() {
+		super();
 		this.player = new PlaneElement(150, 300, 50, 50);
 		this.children = [this.player];
 		this.status = "playing";
+		this.monsterCD = 0;
 	}
 	start() {
 		this.player.on("panstart", (event) => {
@@ -41,28 +33,28 @@ class PlaneGame extends Game {
 		});
 	}
 	update() {
-		const monsterCD = 0;
-		const monsterGenerator = () => {
-			if (monsterCD === 0) {
-				const randomX = Math.random() * window.screen.width;
-				return this.createChildren(MonsterElement);
-			} else {
-				monsterCD = 1000
-			}
-		};
+		if (this.monsterCD === 0) {
+			const randomX = Math.random() * window.screen.width;
+			this.monsterCD = 50;
+			this.createChildren(MonsterElement, randomX, 0, 40, 40);
+		} else {
+			this.monsterCD--;
+		}
 	}
 	updateFrame() {
+		this.executeEvent();
 		this.update();
+		this.handleCollistion();
 		bfs(this.children, (eachNode) => {
 			eachNode.updateFrame();
 		});
-		renderer.render(this.children);
+		this.renderer.render(this.children);
 	}
 	run() {
 		runAnimation(this.updateFrame.bind(this));
 	}
 }
 
-const game = new PlaneGame(canvas);
+const game = new PlaneGame();
 game.start();
 game.run();

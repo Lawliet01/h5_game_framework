@@ -1,11 +1,13 @@
 {
-  "name": "gameGenerator",
+  "name": "game_generator",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open",
+    "start": "cross-env GAME=planeGame webpack serve",
+    "giao": "webpack-dev-server --open",
+    "dev:planeGame": "webpack --env.GAME=planeGame serve",
     "build": "webpack"
   },
   "keywords": [],
@@ -13,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
+    "cross-env": "^7.0.2",
     "file-loader": "^6.1.1",
     "html-webpack-plugin": "^4.5.0",
     "webpack": "^5.1.3",

@@ -1,6 +1,6 @@
-import { bfs } from "../lib/utils";
+import { bfs } from "common/utils";
 
-export default class Rendererer {
+export default class Renderer {
 	constructor(canvas) {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext("2d");

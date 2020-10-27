@@ -1,17 +1,16 @@
 export default class BaseComponent {
 	constructor() {
-		this.beforeCreate()
+		this.beforeCreate();
 
 		this._eventQueue = [];
-		this._eventListeners = new Map;
+		this._eventListeners = new Map();
 		this.children = [];
 		this.parent = null;
-		this.on("destory", (element)=>{
-			this.children = this.children.filter(e => e !== element)
-			
-		})
+		this.on("destroy", (element) => {
+			this.children = this.children.filter((e) => e !== element);
+		});
 
-		this.created()
+		this.created();
 	}
 	/**
 	 * 组件间交流机制
@@ -55,6 +54,7 @@ export default class BaseComponent {
 	 * 创建、销毁以及生命周期
 	 */
 	createChildren(Constructor, x, y, w, h) {
+		// debugger
 		const child = new Constructor(x, y, w, h);
 		this.children.push(child);
 		child.setParent(this);
@@ -64,16 +64,16 @@ export default class BaseComponent {
 		this.parent = parent;
 	}
 	destroy() {
-		this.beforeDestroy()
-		
-		this.sendEvent(this.parent, "destory", this)
+		this.beforeDestroy();
 
-		this.destroyed({})
+		this.sendEvent(this.parent, "destroy", this);
+
+		this.destroyed({});
 	}
-	beforeCreate(){}
-	created(){}
-	beforeUpdate(){}
-	updated(){}
-	beforeDestroy(){}
-	destroyed(){}
+	beforeCreate() {}
+	created() {}
+	beforeUpdate() {}
+	updated() {}
+	beforeDestroy() {}
+	destroyed() {}
 }
