@@ -6,9 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env GAME=planeGame webpack serve",
-    "giao": "webpack-dev-server --open",
-    "dev:planeGame": "webpack --env.GAME=planeGame serve",
-    "build": "webpack"
+    "build": "cross-env GAME=planeGame webpack"
   },
   "keywords": [],
   "author": "",

@@ -25,7 +25,8 @@ class MonsterElement extends BaseElement {
 		super(x, y, w, h);
 		this.image = new Image();
 		this.image.src = monster;
-		this.setCollistionListener('egg', ()=>this.destroy())
+		this.setCollistionListener("egg", () => this.destroy());
+        this.setCollistionListener("plane", () => this.destroy());
 	}
 	update() {
 		this.y += 5;
@@ -42,7 +43,7 @@ class PlaneElement extends BaseElement {
 		this.image = new Image();
 		this.image.src = plane;
 		this.fireCD = 0;
-		this.setCollistionListener("monster", () => console.log('you lose'));
+		this.setCollistionListener("monster", () => alert('you lose'));
 
 	}
 	update() {
