@@ -41,18 +41,6 @@ class PlaneGame extends Game {
 			this.monsterCD--;
 		}
 	}
-	updateFrame() {
-		this.executeEvent();
-		this.update();
-		this.handleCollistion();
-		bfs(this.children, (eachNode) => {
-			eachNode.updateFrame();
-		});
-		this.renderer.render(this.children);
-	}
-	run() {
-		runAnimation(this.updateFrame.bind(this));
-	}
 }
 
 const game = new PlaneGame();

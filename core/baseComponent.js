@@ -31,10 +31,11 @@ export default class BaseComponent {
 		// 把事件添加到队列上, 待下一帧执行
 		if (!this._eventListeners.has(name)) return;
 		const handler = this._eventListeners.get(name);
-		handler.eventName = name; // 用于避免重复执行相同的事件
-		this._eventQueue.push(function () {
+		const wrapper = function(){
 			return handler(data);
-		});
+		}
+		wrapper.eventName = name; // 用于避免重复执行相同的事件
+		this._eventQueue.push(wrapper);
 	}
 	sendEvent(target, eventName, data) {
 		// 发送事件到其他组件上面

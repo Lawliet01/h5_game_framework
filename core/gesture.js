@@ -61,8 +61,8 @@ export default function enableGesture(e) {
 
 		if (context.isTap)
 			newEventDispatch("tap", {
-				startX: context.startX,
-				startY: context.startY,
+				clientX: context.startX,
+				clientY: context.startY,
 			});
 		if (context.isPan)
 			newEventDispatch("panend", {

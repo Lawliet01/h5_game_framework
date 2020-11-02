@@ -1,23 +1,28 @@
 {
-  "name": "game_generator",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env GAME=planeGame webpack serve",
-    "build": "cross-env GAME=planeGame webpack"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "cross-env": "^7.0.2",
-    "file-loader": "^6.1.1",
-    "html-webpack-plugin": "^4.5.0",
-    "webpack": "^5.1.3",
-    "webpack-cli": "^4.1.0",
-    "webpack-dev-server": "^3.11.0"
-  }
+    "name": "game_generator",
+    "version": "1.0.8",
+    "description": "",
+    "main": "./dist/main.js",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start:planeGame": "cross-env GAME=planeGame webpack serve",
+        "start:redPacketGame": "cross-env GAME=redPacketGame webpack serve",
+        "build:planeGame": "cross-env NODE_ENV=production GAME=planeGame webpack",
+        "build:redPacketGame": "cross-env NODE_ENV=production GAME=redPacketGame webpack"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "clean-webpack-plugin": "^3.0.0",
+        "cross-env": "^7.0.2",
+        "file-loader": "^6.1.1",
+        "html-webpack-plugin": "^4.5.0",
+        "webpack": "^5.1.3",
+        "webpack-cli": "^4.1.0",
+        "webpack-dev-server": "^3.11.0"
+    }
 }
