@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-    target: "node",
     entry: path.resolve(__dirname, "games", `${process.env.GAME}`, "src", "index.js"),
     output:
         process.env.NODE_ENV !== "production"
@@ -29,17 +28,30 @@ module.exports = {
     },
     module: {
         rules: [
+            // {
+            //     test: /\.(png|svg|jpg|gif)$/,
+            //     use: ["file-loader"],
+            // },
             {
-                test: /\.(png|svg|jpg|gif)$/,
-                use: ["file-loader"],
+                test: /\.(png|jpg|gif)$/i,
+                use: [
+                    {
+                        loader: "url-loader",
+                        options: {
+                            limit: 200000,
+                        },
+                    },
+                ],
             },
         ],
     },
-    plugins: [
-        new CleanWebpackPlugin(),
-        process.env.NODE_ENV !== "production" ? new HtmlWebpackPlugin({
-            title: "Output Management",
-        }):'',
-    ],
+    plugins:
+        process.env.NODE_ENV !== "production"
+            ? [
+                  new HtmlWebpackPlugin({
+                      title: "Output Management",
+                  }),
+              ]
+            : [new CleanWebpackPlugin()],
     devtool: "inline-source-map",
 };

@@ -1,46 +1,51 @@
 import baseComponent from "./baseComponent"
 
 class BaseElement extends baseComponent {
-	constructor(x = 0, y = 0, width = 0, height = 0) {
-		super();
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.collisionListener = new Map();
-		this.collistionHandleQueue = []
-	}
-	update() {
-		// 自定义每一帧更新的逻辑
-	}
-	updateFrame() {
-		this.executeEvent();
-		this.update();
-	}
-	render(ctx) {
-		// 如果有自己的渲染逻辑的话可以覆盖
-		ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-	}
-	setPos(x, y) {
-		this.x = x;
-		this.y = y;
-	}
-	/**
-	 * 碰撞管理
-	 */
-	setCollistionListener(elementType, handler) {
-		this.collisionListener.set(elementType, ()=>{
-			this.collistionHandleQueue.push((...args)=>{
-				return handler.call(this, ...args)
-			})
-		});
-	}
-	executeCollistionQueue(){
-		while(this.collistionHandleQueue.length){
-			const handler = this.collistionHandleQueue.shift();
-			handler()
-		}
-	}
+    constructor(x = 0, y = 0, width = 0, height = 0) {
+        super();
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.collisionListener = new Map();
+        this.collistionHandleQueue = [];
+    }
+    realDimension(canvasWidth, canvasHeight) {
+        // 渲染和交互的时候使用
+        return {
+            x: (this.x * canvasWidth) / 100,
+            y: (this.y * canvasHeight) / 100,
+            width: (this.width * canvasWidth) / 100,
+            height: (this.height * canvasWidth) / 100,
+        };
+    }
+    update() {
+        // 自定义每一帧更新的逻辑
+    }
+    updateFrame(timeStep) {
+        this.executeEvent();
+        this.update(timeStep);
+    }
+    setPos(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    /**
+     * 碰撞管理
+     */
+    setCollistionListener(elementType, handler) {
+        this.collisionListener.set(elementType, () => {
+            this.collistionHandleQueue.push((...args) => {
+                return handler.call(this, ...args);
+            });
+        });
+    }
+    executeCollistionQueue() {
+        while (this.collistionHandleQueue.length) {
+            const handler = this.collistionHandleQueue.shift();
+            handler();
+        }
+    }
 }
 
 // 初始化config

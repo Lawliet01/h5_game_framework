@@ -1,61 +1,56 @@
 import baseComponent from "./baseComponent";
 import enableGesture from "./gesture.js";
 import { bfs } from "common/utils";
-import Renderer from "./renderer.js";
+// import Renderer from "./renderer.js";
 import { runAnimation } from "core/runtime.js";
 
 
 class Game extends baseComponent {
-    constructor() {
+    constructor(renderer) {
         super();
-        this._createCanvas();
-        this._handlePageEvent();
+        this.renderer = renderer
+        this.actorsCanvas = this.renderer.getRenderer("actorsRenderer").canvas;
+        this._handlePageEvent(this.actorsCanvas);
         this.status = 'ready'
     }
-    _createCanvas() {
-        const canvas = document.createElement("canvas");
-        canvas.width = window.screen.width;
-        canvas.height = window.screen.height;
-        this.canvas = canvas;
-        enableGesture(canvas);
-        this.renderer = new Renderer(canvas);
-        document.body.style.overflow = "hidden";
-        document.body.style.margin = 0;
-        document.body.appendChild(canvas);
-    }
-    _handlePageEvent() {
+    _handlePageEvent(canvas) {
         const dispatchToActors = (eventName, event, targetOnElement) => {
             const child = this.children.filter((child) => child.hasEventListener(eventName));
-
-            const { clientX, clientY } = event.detail;
-            for (let actor of this.children) {
-                const { x, y, width, height } = actor;
+            const canvasDimension = canvas.getBoundingClientRect();
+            const clientX = event.detail.clientX - canvasDimension.x;
+            const clientY = event.detail.clientY - canvasDimension.y;
+            // console.log(clientX, clientY);
+            for (let actor of this.children) { // 这里写得不好
+                const { x, y, width, height } = actor.realDimension(canvasDimension.width,canvasDimension.height)
+                // console.log(x, y, width, height);
+                
                 if (!targetOnElement || (clientX > x && clientY > y && clientX < x + width && clientY < y + height)) {
                     this.sendEvent(actor, eventName, event.detail);
                 }
             }
         };
+        enableGesture(canvas);
         // 提供管理事件能力 (拖动事件)
-        this.canvas.addEventListener("panstart", (event) => {
+        canvas.addEventListener("panstart", (event) => {
             const pan = (event) => {
                 dispatchToActors("pan", event, false);
             };
 
             const panend = (event) => {
                 dispatchToActors("panend", event, false);
-                this.canvas.removeEventListener("pan", pan);
-                this.canvas.removeEventListener("panend", panend);
+                canvas.removeEventListener("pan", pan);
+                canvas.removeEventListener("panend", panend);
             };
 
             dispatchToActors("panstart", event, true);
 
-            this.canvas.addEventListener("pan", pan);
+            canvas.addEventListener("pan", pan);
 
-            this.canvas.addEventListener("panend", panend);
+            canvas.addEventListener("panend", panend);
         });
 
         // 点击事件
-        this.canvas.addEventListener("tap", (event) => {
+        canvas.addEventListener("tap", (event) => {
             dispatchToActors("tap", event, true);
         });
     }
@@ -98,20 +93,25 @@ class Game extends baseComponent {
         this.update(timeStep);
         this._handleCollistion();
         bfs(this.children, (eachNode) => {
-            eachNode.updateFrame();
+            eachNode.updateFrame(timeStep);
         });
-        this.renderer.render(this.children);
+        this.renderer.render(this);
         return this.status === 'running'
     }
     win(){
         this.status = 'win'
+        this.resolve(this.status)
     }
     lose(){
         this.status = 'lose'
+        this.resolve(this.status);
     }
-    run() {
+    async run() {
         this.status = 'running'
-        runAnimation(this._updateFrame.bind(this));
+        return new Promise(resolve=>{
+            this.resolve = resolve
+            runAnimation(this._updateFrame.bind(this));
+        })
     }
 }
 

@@ -8,3 +8,9 @@ export function bfs(node, func){
 		}
     }
 }
+
+export function createImageElement(src) {
+    const image = new Image()
+    image.src = src
+    return image
+}

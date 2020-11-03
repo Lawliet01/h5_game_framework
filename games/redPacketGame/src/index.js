@@ -1,47 +1,49 @@
 import Game from "core/baseGame.js";
 import { RedPacketElement } from "./customElement";
 import { bfs } from "common/utils";
+import redPacketGameRenderer from "./customRenderer";
 
 class RedPacketGame extends Game {
-    constructor() {
-        super();
+    constructor(parent) {
+        super(redPacketGameRenderer);
+        redPacketGameRenderer.createView(parent);
         this.point = 0;
         this.time = 60000;
         this.cd = 0;
         this.on("addPoint", (data) => {
             this.point += data.point;
-            console.log(this.point);
         });
     }
     update(timeStep) {
         if (this.time > 0) {
             this.time -= timeStep;
-            this.generateRedPacket();
+            this.generateRedPacket(timeStep);
         } else if (this.time <= 0) {
-            this.time = 0
+            this.time = 0;
             if (this.point > 200) {
-                this.win()
-                console.log('You win');
+                this.win();
             } else {
-                this.lose()
-                console.log('You lose');
+                this.lose();
             }
         }
     }
-    generateRedPacket() {
-        if (this.cd === 0) {
-            this.cd = 100;
-            const windowWidth = window.screen.width;
-            const windowHeight = window.screen.height;
-            const randomNum = (from, to) => Math.random() * (to - from) + from;
-            this.createChildren(RedPacketElement, randomNum(0, windowWidth - 50), randomNum(0, windowHeight - 50));
+    generateRedPacket(timeStep) {
+        if (this.cd <= 0) {
+            this.cd = 300;
+            this.createChildren(RedPacketElement, Math.random() * (100 - 20), Math.random() * (100 - 20));
         } else {
-            this.cd--;
+            this.cd -= timeStep;
         }
     }
 }
 
-const game = new RedPacketGame();
-alert("点击确定开始游戏");
-game.run();
-// export default RedPacketGame;
+// document.body.style.position = "relative";
+// document.body.style.backgroundColor = "black";
+// document.body.style.height = window.screen.height + "px";
+// const game = new RedPacketGame(document.body);
+// alert("点击确定开始游戏");
+// (async function () {
+//     const result = await game.run();
+//     console.log("get result" + result);
+// })();
+export default RedPacketGame;
