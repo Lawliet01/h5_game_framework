@@ -42,7 +42,9 @@ class RedPacketGame extends Game {
 // document.body.style.position = "relative";
 // document.body.style.backgroundColor = "black";
 // document.body.style.height = window.screen.height + "px";
-// const game = new RedPacketGame(document.body);
+// const game = new RedPacketGame(document.body, {
+//     redPacketImage: null,
+// });
 // alert("点击确定开始游戏");
 // (async function () {
 //     const result = await game.run();
