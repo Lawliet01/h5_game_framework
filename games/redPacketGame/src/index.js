@@ -2,10 +2,12 @@ import Game from "core/baseGame.js";
 import { RedPacketElement } from "./customElement";
 import { bfs } from "common/utils";
 import redPacketGameRenderer from "./customRenderer";
+// import monsters from "./assets/image/monster.png"
 
 class RedPacketGame extends Game {
-    constructor(parent) {
+    constructor(parent, options) {
         super(redPacketGameRenderer);
+        redPacketGameRenderer.setConfig(options || {})
         redPacketGameRenderer.createView(parent);
         this.point = 0;
         this.time = 60000;

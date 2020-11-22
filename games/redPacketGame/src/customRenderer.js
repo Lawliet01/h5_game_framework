@@ -1,7 +1,7 @@
 import { CanvasRenderer, BackgroundRenderer, ActorRenderer, Renderer } from "core/renderer.js";
 import { createImageElement } from "common/utils";
 // import bgImage from "./assets/image/background.jpg";
-import redPacketImage from "./assets/image/redPacket.png";
+import redPacketDefaultImage from "./assets/image/redPacket.png";
 
 class MyActorRenderer extends ActorRenderer {
     setDimension(parentX, parentY, parentWidth, parentHeight) {
@@ -33,7 +33,21 @@ class PointRenderer extends CanvasRenderer {
     }
 }
 
+const pointRenderer = new PointRenderer();
+const actorRenderer = new MyActorRenderer();
+
 class RedPacketGameRenderer extends Renderer {
+    setConfig(options){
+        this.options = options
+        const redPacketImage = options.redPacketImage ? options.redPacketImage : redPacketDefaultImage;
+        const redPacketImageElement = createImageElement(redPacketImage);
+        redPacketImageElement.onload = () => {
+            actorRenderer.setRender('redPacket', (ctx, actor, canvasWidth, canvasHeight) => {
+                const { x, y, width, height } = actor.realDimension(canvasWidth, canvasHeight);
+                ctx.drawImage(redPacketImageElement, x, y, width, height);
+            });
+        };
+    }
     render(gameData) {
         // if (!this.bgRendered) {
         //     const bgRenderer = this.getRenderer("backgroundRenderer");
@@ -47,19 +61,8 @@ class RedPacketGameRenderer extends Renderer {
     }
 }
 
-const redPacketImageElement = createImageElement(redPacketImage);
-// const backgroundRenderer = new BackgroundRenderer(bgImage);
-
-const actorRenderer = new MyActorRenderer();
-
-redPacketImageElement.onload = () => {
-    actorRenderer.setRender("redPacket", (ctx, actor, canvasWidth, canvasHeight) => {
-        const { x, y, width, height } = actor.realDimension(canvasWidth, canvasHeight);
-        ctx.drawImage(redPacketImageElement, x, y, width, height);
-    });
-};
-
-const pointRenderer = new PointRenderer();
 const redPacketGameRenderer = new RedPacketGameRenderer([actorRenderer, pointRenderer]);
+
+// const backgroundRenderer = new BackgroundRenderer(bgImage);
 
 export default redPacketGameRenderer;
